@@ -22,14 +22,14 @@ public class Voto {
     private Long pautaId;
 
     @Column(name = "cooperado_id")
-    private Long cooperativoId;
+    private Long cooperadoId;
 
     @Column(name = "voto_sim")
     private boolean votoSim;
 
-    public Voto(Long pautaId, Long cooperativoId, boolean votoSim) {
+    public Voto(Long pautaId, Long cooperadoId, boolean votoSim) {
         this.pautaId = pautaId;
-        this.cooperativoId = cooperativoId;
+        this.cooperadoId = cooperadoId;
         this.votoSim = votoSim;
     }
 }

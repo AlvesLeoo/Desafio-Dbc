@@ -6,11 +6,15 @@ import desafio.dbc.dto.request.AbrirVotacaoRequest;
 import desafio.dbc.dto.request.CriarPautaRequest;
 import desafio.dbc.dto.response.PautaResponse;
 import desafio.dbc.dto.response.ResultadoResponse;
+import desafio.dbc.exceptions.PautaNaoEncontradaException;
+import desafio.dbc.exceptions.SessaoDeVotacaoJaAbertaException;
 import desafio.dbc.mapper.PautaMapper;
 import desafio.dbc.repository.PautaRepository;
 import desafio.dbc.service.PautaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class PautaServiceImpl implements PautaService {
@@ -28,16 +32,20 @@ public class PautaServiceImpl implements PautaService {
     @Override
     public PautaResponse abrirVotacao(AbrirVotacaoRequest abrirVotacaoRequest) {
         Pauta pauta = pautaRepository.findById(abrirVotacaoRequest.getId()).get();
-        pauta.setSessaoAberta(true);
         calcularEncerramento(abrirVotacaoRequest.getDuracao(), pauta);
+        if(pauta.getEncerramento().isBefore(LocalDateTime.now())){
+            throw new SessaoDeVotacaoJaAbertaException();
+        }
+        pauta.setSessaoAberta(true);
         pautaRepository.save(pauta);
-        ;
         return PautaMapper.toResponse(pauta);
     }
 
     @Override
     public ResultadoResponse obterResultado(Long id) {
-        Pauta pauta = pautaRepository.findById(id).get();
+        Pauta pauta = pautaRepository.findById(id).orElseThrow(() -> {
+            throw new PautaNaoEncontradaException();
+        });
         return PautaMapper.toResultadoResponse(pauta);
     }
 

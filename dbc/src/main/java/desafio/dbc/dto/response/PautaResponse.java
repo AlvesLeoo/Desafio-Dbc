@@ -11,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class PautaResponse implements Serializable {
+
     @JsonProperty("id")
     private Long id;
 }

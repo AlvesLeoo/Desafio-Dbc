@@ -12,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class VotoRequest implements Serializable {
+
     @JsonProperty("pautaId")
     private Long pautaId;
 
